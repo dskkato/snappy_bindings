@@ -25,6 +25,25 @@ extern "C" {
         -> c_int;
 }
 
+pub fn validate_compressed_buffer(src: &[u8]) -> bool {
+    unsafe { snappy_validate_compressed_buffer(src.as_ptr(), src.len() as size_t) == 0 }
+}
+
+pub fn compress(src: &[u8]) -> Vec<u8> {
+    unsafe {
+        let srclen = src.len() as size_t;
+        let psrc = src.as_ptr();
+
+        let mut dstlen = snappy_max_compressed_length(srclen);
+        let mut dst = Vec::with_capacity(dstlen as usize);
+        let pdst = dst.as_mut_ptr();
+
+        snappy_compress(psrc, srclen, pdst, &mut dstlen);
+        dst.set_len(dstlen as usize);
+        dst
+    }
+}
+
 fn main() {
     let x = unsafe { snappy_max_compressed_length(100) };
     println!("max compressed length of a 100 byte buffer: {}", x);
