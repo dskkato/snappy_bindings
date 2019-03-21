@@ -3,7 +3,6 @@ rust:
   - stable
   - beta
 os:
-  - linux
   - osx
 cache: cargo
 matrix:
