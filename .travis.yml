@@ -2,13 +2,24 @@ language: rust
 rust:
   - stable
   - beta
-os:
-  - linux
-  - osx
 cache: cargo
 matrix:
+  include:
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-7
+      env:
+        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+    - os: osx
+      env:
+        - MATRIX_EVAL=""
   fast_finish: true
 before_script:
+  - eval "${MATRIX_EVAL}"
   - rustup component add rustfmt
   - rustup component add clippy
 script:
